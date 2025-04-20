@@ -1,6 +1,6 @@
 # Simple Create, Read, Update, Delete (CRUD) con PHP & MySQL. Para el curso de Pruebas y calidad del software - DSI - La Salle
 
-Ejemplo básico de un CRUD para el curso de prueba y calidad del software - V.
+Ejemplo básico de un CRUD, incluye malas prácticas, errores de diseño para el curso de prueba y calidad del software - V.
 
 Simple application with: Very simple add, edit, delete, view in PHP & MySQL
 
