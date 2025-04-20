@@ -1,44 +1,52 @@
 <html>
 <head>
-	<title>Add Data</title>
+	<title>Registrar usuario</title>
 </head>
 
 <body>
 <?php
-// Include the database connection file
 require_once("dbConnection.php");
 
 if (isset($_POST['submit'])) {
-	// Escape special characters in string for use in SQL statement	
+
 	$name = mysqli_real_escape_string($mysqli, $_POST['name']);
 	$age = mysqli_real_escape_string($mysqli, $_POST['age']);
 	$email = mysqli_real_escape_string($mysqli, $_POST['email']);
-		
-	// Check for empty fields
-	if (empty($name) || empty($age) || empty($email)) {
-		if (empty($name)) {
-			echo "<font color='red'>Name field is empty.</font><br/>";
-		}
-		
-		if (empty($age)) {
-			echo "<font color='red'>Age field is empty.</font><br/>";
-		}
-		
-		if (empty($email)) {
-			echo "<font color='red'>Email field is empty.</font><br/>";
-		}
-		
-		// Show link to the previous page
-		echo "<br/><a href='javascript:self.history.back();'>Go Back</a>";
-	} else { 
-		// If all the fields are filled (not empty) 
+	$password = mysqli_real_escape_string($mysqli, $_POST['password']);
 
-		// Insert data into database
-		$result = mysqli_query($mysqli, "INSERT INTO users (`name`, `age`, `email`) VALUES ('$name', '$age', '$email')");
+	$file_name = '';
+	$file_tmp = '';
+	$file_path = '';
+
+	if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+		$file_name = $_FILES['photo']['name'];
+		$file_tmp = $_FILES['photo']['tmp_name'];
+		$file_path = "uploads/" . basename($file_name);
+
+		if (!file_exists('uploads')) {
+			mkdir('uploads', 0777, true);
+		}
+	}
+
+	if (empty($name) || empty($age) || empty($email) || empty($file_name)) {
+		if (empty($name)) echo "<font color='red'>El campo nombre está vacío.</font><br/>";
+		if (empty($age)) echo "<font color='red'>El campo edad está vacío.</font><br/>";
+		if (empty($email)) echo "<font color='red'>El campo correo está vacío.</font><br/>";
+		if (empty($file_name)) echo "<font color='red'>No se ha seleccionado un archivo.</font><br/>";
 		
-		// Display success message
-		echo "<p><font color='green'>Data added successfully!</p>";
-		echo "<a href='index.php'>View Result</a>";
+		echo "<br/><a href='javascript:self.history.back();'>Volver</a>";
+	} else {
+		if (move_uploaded_file($file_tmp, $file_path)) {
+			$hashed_password = md5($password);
+
+			$result = mysqli_query($mysqli, "INSERT INTO users (`name`, `age`, `email`, `file_path`, `password`) VALUES ('$name', '$age', '$email', '$file_path','$hashed_password')");
+			
+			echo "<p><font color='green'>¡Datos y archivo subidos correctamente!</font></p>";
+			echo "<a href='index.php'>Ver resultados</a>";
+		} else {
+			echo "<font color='red'>Error al subir el archivo.</font><br/>";
+			echo "<br/><a href='javascript:self.history.back();'>Volver</a>";
+		}
 	}
 }
 ?>
