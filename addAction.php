@@ -9,10 +9,10 @@ require_once("dbConnection.php");
 
 if (isset($_POST['submit'])) {
 
-	$name = mysqli_real_escape_string($mysqli, $_POST['name']);
-	$age = mysqli_real_escape_string($mysqli, $_POST['age']);
-	$email = mysqli_real_escape_string($mysqli, $_POST['email']);
-	$password = mysqli_real_escape_string($mysqli, $_POST['password']);
+	$name =  $_POST['name'];
+	$age =  $_POST['age'];
+	$email = $_POST['email'];
+	$password = $_POST['password'];
 
 	$file_name = '';
 	$file_tmp = '';
@@ -37,9 +37,8 @@ if (isset($_POST['submit'])) {
 		echo "<br/><a href='javascript:self.history.back();'>Volver</a>";
 	} else {
 		if (move_uploaded_file($file_tmp, $file_path)) {
-			$hashed_password = md5($password);
 
-			$result = mysqli_query($mysqli, "INSERT INTO users (`name`, `age`, `email`, `file_path`, `password`) VALUES ('$name', '$age', '$email', '$file_path','$hashed_password')");
+			$result = mysqli_query($mysqli, "INSERT INTO users (`name`, `age`, `email`, `file_path`, `password`) VALUES ('$name', '$age', '$email', '$file_path','$password')");
 			
 			echo "<p><font color='green'>¡Datos y archivo subidos correctamente!</font></p>";
 			echo "<a href='index.php'>Ver resultados</a>";
